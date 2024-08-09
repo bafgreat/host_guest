@@ -1,0 +1,26 @@
+name: host_guest
+channels:
+  - apple
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pip
+  - pipx
+  - scikit-learn
+  - matplotlib
+  - seaborn
+  - pandas
+  - pandas-datareader
+  - pillow
+  - tqdm
+  - requests
+  - h5py
+  - pyyaml
+  - flask
+  - boto3
+  - ipykernel
+  - xtb
+  - pip:
+    - ase
+
+

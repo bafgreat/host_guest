@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "host_guest"
+version = "0.1.0"
+description = ""
+authors = ["Dinga Wonanke"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.scripts]
+dock_folder ="host_guest.setter.create_complexes_from_folder:main"
+dock_structure ="host_guest.setter.create_complexes_from_folder:main2"
+dock_from_ase="host_guest.setter.create_complexes_from_ase_atoms:main"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

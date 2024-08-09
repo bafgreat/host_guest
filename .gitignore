@@ -1,0 +1,5 @@
+.history/
+host_guest/setter/__pycache__
+host_guest/io/__pycache__/
+host_guest/energy/
+host_guest/__pycache__/
