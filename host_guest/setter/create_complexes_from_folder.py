@@ -8,7 +8,8 @@ from host_guest.energy import docker
 
 def extract_energy_molecules_from_folder(host_folder, monomer_folder, number_of_host, number_of_monomers, number_of_complexes, results_folder):
     """
-    A fucntion to extract the energy of a given host-guest system.
+    A function to compute the host guest energy for host and monomer from
+    their folders
     parameter
     ----------
     host_folder: str
@@ -47,7 +48,7 @@ def extract_energy_molecules_from_folder(host_folder, monomer_folder, number_of_
 
 def extract_energy_molecules_from_file(host_system_file, monomer_file, number_of_host, number_of_monomers, number_of_complexes, results_folder):
     """
-    A fucntion to extract the energy of a given host-guest system.
+    A fucntion to compute binding energy directly from files.
     parameter
     ----------
     host_folder: str
