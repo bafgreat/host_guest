@@ -12,6 +12,7 @@ The intsallation of host_guest requires the mamba or conda environment.
 
 # Conda Installation
 ```
+git clone https://github.com/bafgreat/host_guest.git
 conda env create -f  conda-env.yml
 ```
 The above line of code will create a new conda environment called
