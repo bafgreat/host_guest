@@ -1,4 +1,7 @@
-#!/bin/python
+#!/usr/bin/python
+from __future__ import print_function
+__author__ = "Dr. Dinga Wonanke"
+__status__ = "production"
 import numpy as np
 import re
 from  ase.io import read
@@ -126,9 +129,6 @@ def scm_out(qcin):
             length_value.append(data[0])
             b = '\t'.join(data[1:])
             coords.append(b)
-        # length = str(len(length_value))
-
-        #TV = ['Tv', 'Tv', 'Tv']
         lat_index = 0
         for i, line in enumerate(qc_input):
             data = line.split()
@@ -191,7 +191,6 @@ def format_coords(coords, atom_labels):
     return coordinates
 
 
-
 def coordinate_definition(filename):
     """
     define how coordinates should be extracted
@@ -236,6 +235,17 @@ def collect_coords(filename):
         cell = np.array([[float(i) for i in j.split()] for j in lattice])
 
     return elements, positions, cell
+
+def load_data_as_ase(filename):
+    """
+    Load data as an ase atoms object
+    """
+    elements, positions, cell = collect_coords(filename)
+    ase_atoms = Atoms(symbols=elements, positions=positions)
+    if len(cell) > 0:
+        ase_atoms = Atoms(symbols=elements, positions=positions, cell=cell, pbc=True)
+
+    return ase_atoms
 
 def xtb_input(filename):
     """
