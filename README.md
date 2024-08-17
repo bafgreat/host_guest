@@ -89,12 +89,106 @@ mof_max_diameter = pore_analyser.pore_diameter_of_structure(mof)
 
 ## Binding energy
 
+There are several ways to create complexes and compute their binding energies.
+
+### Generate complex and binding energy directly from two files
+
+The most simple way is to
+
 ```
 from host_guest.io import coords_library
 from host_guest.energy import docker
 
-mof  = coords_library.load_data_as_ase('test_data/EDUSIF.cif')
-molecule = coords_library.load_data_as_ase('test_data/biphenyl.xyz')
-energy_dict, complex_molecules = docker.Dock(mof, molecule, 1, 1, 1)
-print (energy_dict)
+mof  = coords_library.load_data_as_ase(path_to_host_file)
+molecule = coords_library.load_data_as_ase(path_to_molecule_file)
+energy_dict, complex_molecules = docker.Dock(mof, molecule, number_of_host=1, number_of_monomers=1, number_of_complexes=2)
+filetyper.append_json(new_energy, path_to_save_energy)
+filetyper.append_json_atom(new_mol, path_to_save_complexes)
+```
+
+#### NOTE
+
+- path_to_host_file: is the path to the file containing the host file e.g `test_data/EDUSIF.cif`
+- path_to_molecule_file: is the path to the file containing the molecule file e.g `test_data/biphenyl.xyz`
+- number_of_host : Number of host system to be create in the complex. 1 mean that you will have one host and 2 means two and so on.
+- number_of_monomers : Number of monomers to be created in the complex. 1 mean that you will have one monomer and 2 means two and so on.
+- number_of_complexes : Number of complex to be created in the complex.
+- path_to_save_energy: Path to file to save the energy. It should be a json file
+- path_to_save_complexes: Path to file to save the complex the complexes. It should be a json file.
+
+### Generating complexes and binding energies from multiple files.
+
+In case you wish to generate complexes from multiple files. You can use the following functions:
+
+```
+list_of_hosts = sorted(glob.glob('selected_cifs/*cif'))
+list_of_monomers = sorted(glob.glob('molecules/*xyz'))
+
+def compute_xtb_for_complexes(list_of_hosts, list_of_monomers, results_folder, number_of_host=1, number_of_monomers=1, number_of_complexes=15):
+    """
+    A function to extract the energy of a given host-guest system.
+    parameter
+    ----------
+    list_of_hosts: list
+        List of host system files.
+    list_of_monomers: list
+        List of monomer files.
+    results_folder: str
+        Folder to store results.
+    number_of_host: int, optional
+        Number of host molecules.
+    number_of_monomers: int, optional
+        Number of monomer molecules.
+    number_of_complexes: int, optional
+        Number of complexes to generate.
+    """
+    seen = []
+    if not os.path.exists(results_folder):
+        os.makedirs(results_folder)
+    all_complexes = os.path.join(results_folder, 'complexes')
+    all_energy = os.path.join(results_folder, 'xtb_energy')
+    if not os.path.exists(all_complexes):
+        os.makedirs(all_complexes)
+
+    if not os.path.exists(all_energy):
+        os.makedirs(all_energy)
+
+    refcodes_path = glob.glob(f'{all_energy}/*.json')
+
+
+    if len(refcodes_path)>0:
+        seen = [refcodes.split('/')[-1].split('.')[0] for refcodes in refcodes_path]
+    print (seen)
+
+
+    new_mol = {}
+    new_energy = {}
+
+    list_of_monomers = sorted([os.path.join(list_of_monomers, i) for i in os.listdir(list_of_monomers)])
+
+    for host_system_file in list_of_hosts:
+        host_base_name = os.path.basename(host_system_file).split('.')[0]
+        print (host_base_name)
+        if host_base_name not in seen:
+            print(host_system_file)
+            for monomer_file in list_of_monomers:
+                monomer = read(monomer_file)
+                host_system = read(host_system_file)
+                monomer_base_name = os.path.basename(monomer_file).split('.')[0]
+                base_name = host_base_name + '_' + monomer_base_name
+                if base_name not in seen:
+                    energy_dict, complex_molecules = docker.Dock(
+                        host_system, monomer, number_of_host, number_of_monomers, number_of_complexes)
+                    new_mol[base_name] = complex_molecules
+                    new_energy[base_name] = energy_dict
+                    mol_files = os.path.join(all_complexes, host_base_name+'.json')
+                    energy_files = os.path.join(all_energy, host_base_name+'.json')
+                    filetyper.append_json(new_energy, energy_files)
+                    filetyper.append_json_atom(new_mol, mol_files)
+                else:
+                    print(f'{base_name} has already been computed')
+        else:
+            print(f'{host_base_name} has already been computed')
+    return
+compute_xtb_for_complexes(list_of_hosts, list_of_monomers, number_of_complexes=15)
 ```
