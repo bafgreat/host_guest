@@ -1,7 +1,8 @@
-![intro](images/intro.gif)
-
-# `host_guest` Python Module
-
+# `host_guest`
+<!-- ![intro](images/intro.gif) -->
+<div align="center">
+    <img src="images/intro.gif" alt="intro">
+</div>
 ## Overview
 
 `host_guest` is a Python module for generating complexes between a host system and a guest molecule. This module facilitates the process by automating the placement of guest molecules within a specified radius around the host system and calculating the binding energies using the GFN-xTB method.
