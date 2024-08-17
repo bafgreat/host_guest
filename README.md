@@ -54,6 +54,11 @@ After installation activate your environment as follows:
 conda activate host_guest
 ```
 
+
+```
+pip install .
+```
+
 # Usage
 
 ## Loading system
@@ -193,3 +198,33 @@ def compute_xtb_for_complexes(list_of_hosts, list_of_monomers, results_folder, n
     return
 compute_xtb_for_complexes(list_of_hosts, list_of_monomers, number_of_complexes=15)
 ```
+# Command Line Arguments
+You can also run everything directly from the command line
+
+1. If your host systems and monomers are different folders, you can simply run the below command and it will search for `cif` and `xyz` files in each folders. Note that in such a case your host system must be in `cif` file format and your monomers must be in `xyz` file format.
+```
+dock_folder host_folder monomer_folder -nc 20
+```
+
+#### Arguments:
+
+- `host_folder` (str): A folder containing host systems (files with .cif extension).
+- `monomer_folder` (str): A folder containing guest systems (files with .xyz extension).
+- `-nh`, --number_of_host (int, optional): The number of host systems to consider. `Default is 1`.
+- `-nm`, --number_of_monomers (int, optional): The number of monomer systems to consider. `Default is 1`.
+- `-nc`, --number_of_complexes (int, optional): The number of complexes to consider. `Default is 1`.
+- `-r`, --results_folder (str, optional): Directory to save the output files. - Default is `results_folders`.
+
+2. When your host system and monomers are in the same folders, the following command will generate 20 complexes in which complex contains one host system and one monomer.
+```
+dock_structure host_file monomer_file -nc 20
+```
+
+# License
+This project is licensed under the MIT License.
+
+# Contributing
+Contributions are welcome! Please fork the repository and submit a pull request with your changes.
+
+# Support
+For any issues or questions, please open an issue on the GitHub repository.
