@@ -165,6 +165,58 @@ def put_contents(filename, output):
     return
 
 
+def get_section(contents, start_key, stop_key, start_offset=0, stop_offset=0):
+    """
+    Extracts a section of text from a list of strings based on specified start and stop keywords.
+
+    This function scans through the `contents`, which is a list of lines (strings), and extracts a section
+    of the list that starts at the last occurrence of the `start_key` and ends at the first occurrence of
+    the `stop_key`. Optionally, you can adjust the starting and stopping positions by specifying offsets.
+
+    **Parameters**
+    ----------
+    - contents : list of str
+        A list of strings where each element represents a line of text. This is the input text content from
+        which the section is extracted.
+
+    - start_key : str
+        The keyword that marks the beginning of the section. The function will look for the last occurrence
+        of this keyword in the `contents` list.
+
+    - stop_key : str
+        The keyword that marks the end of the section. The function will look for the first occurrence of
+        this keyword after the start position.
+
+    - start_offset : int, optional, default=0
+        An optional offset to adjust the starting position relative to the line containing the `start_key`.
+        A positive value moves the start index forward (further down the list), and a negative value moves
+        it backward (earlier in the list).
+
+    - stop_offset : int, optional, default=0
+        An optional offset to adjust the stopping position relative to the line containing the `stop_key`.
+        A positive value extends the stop index further (more lines after the stop key), and a negative
+        value stops earlier (fewer lines after the stop key).
+
+    **Returns**
+    -------
+    list of str
+        A list of strings representing the extracted section from the start position (based on `start_key`
+        and `start_offset`) to the stop position (based on `stop_key` and `stop_offset`). If the `start_key`
+        or `stop_key` are not found, the function may raise an exception (depending on implementation details).
+    """
+    all_start_indices = []
+    for i, line in enumerate(contents):
+        if  start_key in line:
+            all_start_indices.append(i + start_offset)
+    start_index = all_start_indices[-1]
+    for i in range(start_index, len(contents)):
+        line = contents[i]
+        if stop_key in line:
+            stop_index = i + 1 + stop_offset
+            break
+    data = contents[start_index:stop_index]
+    return  data
+
 def append_contents(filename, output):
     '''
     append contents into a file
