@@ -244,6 +244,7 @@ def load_data_as_ase(filename):
     Load data as an ase atoms object
     """
     elements, positions, cell = collect_coords(filename)
+    print (filename, cell)
     ase_atoms = Atoms(symbols=elements, positions=positions)
     if len(cell) > 0:
         ase_atoms = Atoms(symbols=elements, positions=positions, cell=cell, pbc=True)
