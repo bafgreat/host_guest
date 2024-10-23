@@ -2,7 +2,7 @@ import os
 import glob
 import argparse
 from ase.io import read
-from host_guest.io import filetyper
+from host_guest.io import filetyper, coords_library
 from host_guest.energy import docker
 
 
@@ -30,8 +30,8 @@ def extract_energy_molecules_from_folder(host_folder, monomer_folder, number_of_
     new_energy = {}
     for host_system_file in host_folder:
         for monomer_file in monomer_folder:
-            monomer = read(monomer_file)
-            host_system = read(host_system_file)
+            monomer = coords_library.load_data_as_ase(monomer_file)
+            host_system = coords_library.load_data_as_ase(host_system_file)
             host_base_name = os.path.basename(host_system_file).split('.')[0].split('_')[0]
             monomer_base_name = os.path.basename(monomer_file).split('.')[0]
             base_name = host_base_name + '_' + monomer_base_name
@@ -66,8 +66,8 @@ def extract_energy_molecules_from_file(host_system_file, monomer_file, number_of
 
     new_mol = {}
     new_energy = {}
-    monomer = read(monomer_file)
-    host_system = read(host_system_file)
+    monomer = coords_library.load_data_as_ase(monomer_file)
+    host_system = coords_library.load_data_as_ase(host_system_file)
     host_base_name = os.path.basename(host_system_file).split('.')[0]
     monomer_base_name = os.path.basename(monomer_file).split('.')[0]
     base_name = host_base_name + '_' + monomer_base_name
