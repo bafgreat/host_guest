@@ -7,7 +7,6 @@ import numpy as np
 import re
 from ase.io import read
 from ase import Atoms, Atom
-from orb_models.forcefield import atomic_system
 from host_guest.io import filetyper
 
 
