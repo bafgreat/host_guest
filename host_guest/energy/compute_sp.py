@@ -2,8 +2,6 @@ import os
 import subprocess
 import shutil
 import random
-from orb_models.forcefield import pretrained
-from orb_models.forcefield import atomic_system
 from host_guest.io import coords_library, filetyper
 
 class ComputeEnergy():

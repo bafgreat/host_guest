@@ -22,4 +22,5 @@ tests/test_data/AA.cif
 tests/test_data/RUBTAK01.cif
 tests/test_data/SARSUC.cif
 tests/test_orb.py
+tests/orb_test.py
 
