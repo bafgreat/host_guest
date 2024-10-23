@@ -1,12 +1,14 @@
 [tool.poetry]
 name = "host_guest"
 version = "0.1.0"
-description = ""
+description = "A python module for creating inter molecular complexes"
 authors = ["Dinga Wonanke"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
+ase = "^3.23.0"
+pandas = "^2.2.2"
 
 [tool.poetry.scripts]
 dock_folder ="host_guest.setter.create_complexes_from_folder:main"

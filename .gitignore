@@ -1,3 +1,7 @@
+.DS_Store
+.pyenv/
+.vscode/
+poetry.lock
 .history/
 host_guest/setter/__pycache__
 host_guest/io/__pycache__/
@@ -11,3 +15,11 @@ tests/test_data/First_MOF_1.mol2
 tests/test_data/First_MOF_2.mol2
 tests/test_data/First_MOF_3.mol2
 tests/test_data/image_1/
+
+tests/Manuscript_20240902.docx
+tests/molecular_graph_similarity_methodology.docx
+tests/test_data/AA.cif
+tests/test_data/RUBTAK01.cif
+tests/test_data/SARSUC.cif
+tests/test_orb.py
+

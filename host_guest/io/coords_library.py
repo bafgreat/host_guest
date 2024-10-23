@@ -2,31 +2,35 @@
 from __future__ import print_function
 __author__ = "Dr. Dinga Wonanke"
 __status__ = "production"
+
 import numpy as np
 import re
-from  ase.io import read
-from ase import Atoms
+from ase.io import read
+from ase import Atoms, Atom
+from orb_models.forcefield import atomic_system
 from host_guest.io import filetyper
+
 
 def read_and_return_ase_atoms(filename):
     """
     Function to read the ase atoms
-    parameter
-    ----------
-    filename: string
+    **parameter**
+        filename: string
     """
     ase_atoms = read(filename)
     return ase_atoms
 
+
 def write_ase_atoms(ase_atoms, filename):
     """
     Function to write the ase atoms
-    parameter
-    ----------
-    ase_atoms: ase.Atoms object
-    filename: string
+
+    **parameter**
+        ase_atoms: ase.Atoms object
+        filename: string
     """
     ase_atoms.write(filename)
+
 
 def ase_coordinate(filename):
     "Read coordinate using ase"
@@ -39,7 +43,7 @@ def ase_coordinate(filename):
     for ele, xyz in zip(elements, positions):
         cods = '\t'.join([ele]+[str(i) for i in xyz])
         ase_coord.append(cods)
-    lattice =[]
+    lattice = []
     for i in range(3):
         a = [' '] + [str(i) for i in ase_cell[i]]
         b = '\t'.join(a)
@@ -244,8 +248,24 @@ def load_data_as_ase(filename):
     ase_atoms = Atoms(symbols=elements, positions=positions)
     if len(cell) > 0:
         ase_atoms = Atoms(symbols=elements, positions=positions, cell=cell, pbc=True)
-
     return ase_atoms
+
+
+# def ase_graph(input_system):
+#     """
+#     Create a graph from an ase atoms object
+#     **parameter**
+#         **input_system** : Atoms or Atom object or meolcular file name e.g molecule.xyz or mof.cif
+#     **return**
+#         graph object: ase graph object
+#     """
+#     if isinstance(input_system, Atoms) or isinstance(input_system, Atom):
+#         graph = atomic_system.ase_atoms_to_atom_graphs(input_system)
+#     else:
+#         ase_atoms = load_data_as_ase(input_system)
+#         graph = atomic_system.ase_atoms_to_atom_graphs(ase_atoms)
+#     return graph
+
 
 def xtb_input(filename):
     """

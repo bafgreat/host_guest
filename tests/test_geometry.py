@@ -13,4 +13,6 @@ def test_pore_diameter(mof, molecule):
     mof_max_diameter = pore_analyser.pore_diameter_of_structure(mof)
     assert mof_max_diameter == 13.821456707655694
 
+    print ( pore_analyser.calculate_number_of_pores(mof))
+
 test_pore_diameter(mof, molecule)

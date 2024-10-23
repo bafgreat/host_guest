@@ -39,7 +39,7 @@ Before you begin, ensure that you have the following installed on your system:
 
 Use the following command to clone the `host_guest` repository from GitHub:
 
-```
+```bash
 git clone https://github.com/bafgreat/host_guest.git
 cd host_guest
 conda env create -f  conda-env.yml
@@ -50,12 +50,11 @@ host_guest and will also install every dependencies.
 
 After installation activate your environment as follows:
 
-```
+```bash
 conda activate host_guest
 ```
 
-
-```
+```bash
 pip install .
 ```
 
@@ -65,7 +64,7 @@ pip install .
 
 So far all ase readable files, qchem, AMS, Gaussian input and output files can be loaded directly.
 
-```
+```Python
 from host_guest.io import coords_library
 mof  = coords_library.load_data_as_ase('test_data/EDUSIF.cif')
 molecule = coords_library.load_data_as_ase('test_data/biphenyl.xyz')
@@ -75,8 +74,8 @@ molecule = coords_library.load_data_as_ase('test_data/biphenyl.xyz')
 
 You can compute the maximum diameter of your molecule to verify whether the whether it can fit inside a pore
 
-```
-from host_guest.io import coords_library
+```Python
+from host_guest.io import coords_library,filetyper
 from host_guest.geometry import pore_analyser
 molecule = coords_library.load_data_as_ase('test_data/biphenyl.xyz')
 mole_max_diameter = pore_analyser.molecule_diameter(molecule)
@@ -86,8 +85,8 @@ mole_max_diameter = pore_analyser.molecule_diameter(molecule)
 
 Compute the diameter of a porous system
 
-```
-from host_guest.io import coords_library
+```Python
+from host_guest.io import coords_library,filetyper
 from host_guest.geometry import pore_analyser
 mof  = coords_library.load_data_as_ase('test_data/EDUSIF.cif')
 mof_max_diameter = pore_analyser.pore_diameter_of_structure(mof)
@@ -101,15 +100,15 @@ There are several ways to create complexes and compute their binding energies.
 
 The most simple way is to
 
-```
-from host_guest.io import coords_library
+```Python
+from host_guest.io import coords_library, filetyper
 from host_guest.energy import docker
 
 mof  = coords_library.load_data_as_ase(path_to_host_file)
 molecule = coords_library.load_data_as_ase(path_to_molecule_file)
 energy_dict, complex_molecules = docker.Dock(mof, molecule, number_of_host=1, number_of_monomers=1, number_of_complexes=2)
-filetyper.append_json(new_energy, path_to_save_energy)
-filetyper.append_json_atom(new_mol, path_to_save_complexes)
+filetyper.append_json(energy_dict, path_to_save_energy)
+filetyper.append_json_atom(complex_molecules, path_to_save_complexes)
 ```
 
 #### NOTE
@@ -126,7 +125,7 @@ filetyper.append_json_atom(new_mol, path_to_save_complexes)
 
 In case you wish to generate complexes from multiple files. You can use the following functions:
 
-```
+```Python
 list_of_hosts = sorted(glob.glob('selected_cifs/*cif'))
 list_of_monomers = sorted(glob.glob('molecules/*xyz'))
 
@@ -198,11 +197,13 @@ def compute_xtb_for_complexes(list_of_hosts, list_of_monomers, results_folder, n
     return
 compute_xtb_for_complexes(list_of_hosts, list_of_monomers, number_of_complexes=15)
 ```
+
 # Command Line Arguments
 You can also run everything directly from the command line
 
 1. If your host systems and monomers are different folders, you can simply run the below command and it will search for `cif` and `xyz` files in each folders. Note that in such a case your host system must be in `cif` file format and your monomers must be in `xyz` file format.
-```
+
+```bash
 dock_folder host_folder monomer_folder -nc 20
 ```
 
@@ -216,15 +217,17 @@ dock_folder host_folder monomer_folder -nc 20
 - `-r`, --results_folder (str, optional): Directory to save the output files. - Default is `results_folders`.
 
 2. When your host system and monomers are in the same folders, the following command will generate 20 complexes in which complex contains one host system and one monomer.
-```
+
+```bash
 dock_structure host_file monomer_file -nc 20
 ```
-
 # License
 This project is licensed under the MIT License.
 
 # Contributing
+
 Contributions are welcome! Please fork the repository and submit a pull request with your changes.
 
 # Support
+
 For any issues or questions, please open an issue on the GitHub repository.
