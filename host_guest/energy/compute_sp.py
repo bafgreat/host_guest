@@ -34,10 +34,10 @@ def read_xtb_energy(filename):
     and reads the xtb energy
 
     **parameter**
-        filename: output file
+        - filename: output file
 
     **return**
-        A dictionary containing the xtb energy
+        - A dictionary containing the xtb energy
     """
     contents = filetyper.get_contents(filename)
     energy = {}
@@ -58,8 +58,8 @@ def compute_energy_of_atom(folder_of_atoms, output_folder):
     and then computes their single point energies.
 
     **parameter**
-        folder_of_atoms: A folder containing all the monomers
-        output_folder: The output folder to store the results
+        - folder_of_atoms: A folder containing all the monomers
+        - output_folder: The output folder to store the results
     """
     all_energy = {}
     json_filename = f'{output_folder}/energy_of_atoms.json'

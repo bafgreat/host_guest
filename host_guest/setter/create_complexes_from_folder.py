@@ -8,26 +8,43 @@ from host_guest.energy import docker
 
 def extract_energy_molecules_from_folder(host_folder, monomer_folder, number_of_host, number_of_monomers, number_of_complexes, results_folder):
     """
-    A function to compute the host guest energy for host and monomer from
-    their folders
-    parameter
+    A function to compute the host-guest energy for host and monomer from
+    their folders.
+    Parameters
     ----------
-    host_folder: str
-    monomer_folder: str
+    host_folder: list of str
+        List of paths to host files.
+    monomer_folder: list of str
+        List of paths to monomer files.
+    number_of_host: int
+        Number of host molecules.
+    number_of_monomers: int
+        Number of monomer molecules.
+    number_of_complexes: int
+        Number of complexes to consider.
+    results_folder: str
+        Path to the folder where results are stored.
     """
     seen = []
+
     if not os.path.exists(results_folder):
         os.makedirs(results_folder)
-        json_mol_filename = os.path.join(results_folder, 'complexes.json')
-        json_energy_filename = os.path.join(results_folder, 'energy.json')
+
+    json_mol_filename = os.path.join(results_folder, 'complexes.json')
+    json_energy_filename = os.path.join(results_folder, 'energy.json')
+
+    if os.path.exists(json_mol_filename):
+        json_mol_data = filetyper.load_data(json_mol_filename)
     else:
-        json_mol_filename = filetyper.load_data(
-            os.path.join(results_folder, 'complexes.json'))
-        json_energy_filename = filetyper.load_data(
-            os.path.join(results_folder, 'energy.json'))
-        seen = list(json_energy_filename.keys())
-    new_mol = {}
-    new_energy = {}
+        json_mol_data = {}
+
+    if os.path.exists(json_energy_filename):
+        json_energy_data = filetyper.load_data(json_energy_filename)
+        seen = list(json_energy_data.keys())
+    else:
+        json_energy_data = {}
+
+
     for host_system_file in host_folder:
         for monomer_file in monomer_folder:
             monomer = coords_library.load_data_as_ase(monomer_file)
@@ -35,49 +52,75 @@ def extract_energy_molecules_from_folder(host_folder, monomer_folder, number_of_
             host_base_name = os.path.basename(host_system_file).split('.')[0].split('_')[0]
             monomer_base_name = os.path.basename(monomer_file).split('.')[0]
             base_name = host_base_name + '_' + monomer_base_name
+
             if base_name not in seen:
-                energy_dict, complex_molecules = docker. Dock(
-                    host_system, monomer, number_of_host, number_of_monomers, number_of_complexes)
-                new_mol[base_name] = complex_molecules
-                new_energy[base_name] = energy_dict
-                filetyper.append_json(new_energy, json_energy_filename)
-                filetyper.append_json_atom(new_mol, json_mol_filename)
+                energy_dict, complex_molecules = docker.Dock(
+                    host_system, monomer, number_of_host, number_of_monomers, number_of_complexes
+                )
+                json_mol_data[base_name] = complex_molecules
+                json_energy_data[base_name] = energy_dict
+
+                filetyper.append_json(json_energy_data, json_energy_filename)
+                filetyper.append_json_atom(json_mol_data, json_mol_filename)
+
     return
-
-
 
 def extract_energy_molecules_from_file(host_system_file, monomer_file, number_of_host, number_of_monomers, number_of_complexes, results_folder):
     """
-    A fucntion to compute binding energy directly from files.
-    parameter
+    A function to compute binding energy directly from files.
+    Parameters
     ----------
-    host_folder: str
-    monomer_folder: str
+    host_system_file: str
+        Path to the host file.
+    monomer_file: str
+        Path to the monomer file.
+    number_of_host: int
+        Number of host molecules.
+    number_of_monomers: int
+        Number of monomer molecules.
+    number_of_complexes: int
+        Number of complexes to consider.
+    results_folder: str
+        Path to the folder where results are stored.
     """
     seen = []
+
     if not os.path.exists(results_folder):
         os.makedirs(results_folder)
-        json_mol_filename = os.path.join(results_folder, 'complexes.json')
-        json_energy_filename = os.path.join(results_folder, 'energy.json')
-    else:
-        json_mol_filename = filetyper.load_data(os.path.join(results_folder, 'complexes.json'))
-        json_energy_filename = filetyper.load_data(os.path.join(results_folder, 'energy.json'))
-        seen = list(json_energy_filename.keys())
 
-    new_mol = {}
-    new_energy = {}
+    json_mol_filename = os.path.join(results_folder, 'complexes.json')
+    json_energy_filename = os.path.join(results_folder, 'energy.json')
+
+    if os.path.exists(json_mol_filename):
+        json_mol_data = filetyper.load_data(json_mol_filename)
+    else:
+        json_mol_data = {}
+
+    if os.path.exists(json_energy_filename):
+        json_energy_data = filetyper.load_data(json_energy_filename)
+        seen = list(json_energy_data.keys())
+    else:
+        json_energy_data = {}
+
+
     monomer = coords_library.load_data_as_ase(monomer_file)
     host_system = coords_library.load_data_as_ase(host_system_file)
     host_base_name = os.path.basename(host_system_file).split('.')[0]
     monomer_base_name = os.path.basename(monomer_file).split('.')[0]
     base_name = host_base_name + '_' + monomer_base_name
+
     if base_name not in seen:
-        energy_dict, complex_molecules = docker. Dock(host_system, monomer, number_of_host, number_of_monomers, number_of_complexes)
-        new_mol[base_name] = complex_molecules
-        new_energy[base_name] = energy_dict
-        filetyper.append_json(new_energy, json_energy_filename)
-        filetyper.append_json_atom(new_mol, json_mol_filename)
+        energy_dict, complex_molecules = docker.Dock(
+            host_system, monomer, number_of_host, number_of_monomers, number_of_complexes
+        )
+        json_mol_data[base_name] = complex_molecules
+        json_energy_data[base_name] = energy_dict
+
+        filetyper.append_json(json_energy_data, json_energy_filename)
+        filetyper.append_json_atom(json_mol_data, json_mol_filename)
+
     return
+
 
 
 def main():
