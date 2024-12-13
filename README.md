@@ -1,8 +1,10 @@
 # `host_guest`
+
 <!-- ![intro](images/intro.gif) -->
 <div align="center">
     <img src="images/intro.gif" alt="intro">
 </div>
+
 ## Overview
 
 `host_guest` is a Python module for generating complexes between a host system and a guest molecule. This module facilitates the process by automating the placement of guest molecules within a specified radius around the host system and calculating the binding energies using the GFN-xTB method.
@@ -18,11 +20,11 @@
 - **Data Output**:
   All computed binding energies and the corresponding host-guest configurations are saved in JSON files consequently providing an organized and accessible format for further analysis.
 
-# Installation
+## Installation
 
 The intsallation of host_guest requires mamba or conda environment.This is because `xtb` requires `conda-forges` which makes it work on all platforms.
 
-# Conda Installation
+## Conda Installation
 
 This document provides a step-by-step guide for installing the `host_guest` project using Conda. Follow the instructions below to set up your environment.
 
@@ -58,9 +60,9 @@ conda activate host_guest
 pip install .
 ```
 
-# Usage
+## Usage
 
-## Loading system
+## **Loading system**
 
 So far all ase readable files, qchem, AMS, Gaussian input and output files can be loaded directly.
 
@@ -70,7 +72,7 @@ mof  = coords_library.load_data_as_ase('test_data/EDUSIF.cif')
 molecule = coords_library.load_data_as_ase('test_data/biphenyl.xyz')
 ```
 
-## Computing maximum molecule diameter
+## **Computing maximum molecule diameter**
 
 You can compute the maximum diameter of your molecule to verify whether the whether it can fit inside a pore
 
@@ -81,7 +83,7 @@ molecule = coords_library.load_data_as_ase('test_data/biphenyl.xyz')
 mole_max_diameter = pore_analyser.molecule_diameter(molecule)
 ```
 
-## Maximum diameter of pore
+## **Maximum diameter of pore**
 
 Compute the diameter of a porous system
 
@@ -92,7 +94,7 @@ mof  = coords_library.load_data_as_ase('test_data/EDUSIF.cif')
 mof_max_diameter = pore_analyser.pore_diameter_of_structure(mof)
 ```
 
-## Binding energy
+## **Binding energy**
 
 There are several ways to create complexes and compute their binding energies.
 
@@ -198,16 +200,19 @@ def compute_xtb_for_complexes(list_of_hosts, list_of_monomers, results_folder, n
 compute_xtb_for_complexes(list_of_hosts, list_of_monomers, number_of_complexes=15)
 ```
 
-# Command Line Arguments
+## Command Line Arguments
+
 You can also run everything directly from the command line
 
-1. If your host systems and monomers are different folders, you can simply run the below command and it will search for `cif` and `xyz` files in each folders. Note that in such a case your host system must be in `cif` file format and your monomers must be in `xyz` file format.
+1; **Batch processing**
+
+If your host systems and monomers are different folders, you can simply run the below command and it will search for `cif` and `xyz` files in each folders. Note that in such a case your host system must be in `cif` file format and your monomers must be in `xyz` file format.
 
 ```bash
 dock_folder host_folder monomer_folder -nc 20
 ```
 
-#### Arguments:
+### Arguments
 
 - `host_folder` (str): A folder containing host systems (files with .cif extension).
 - `monomer_folder` (str): A folder containing guest systems (files with .xyz extension).
@@ -216,18 +221,98 @@ dock_folder host_folder monomer_folder -nc 20
 - `-nc`, --number_of_complexes (int, optional): The number of complexes to consider. `Default is 1`.
 - `-r`, --results_folder (str, optional): Directory to save the output files. - Default is `results_folders`.
 
-2. When your host system and monomers are in the same folders, the following command will generate 20 complexes in which complex contains one host system and one monomer.
+2; **Single file**
+
+When your host system and monomers are in the same folders, the following command will generate 20 complexes in which complex contains one host system and one monomer.
 
 ```bash
 dock_structure host_file monomer_file -nc 20
 ```
-# License
+
+- `host_file` (str): Host file. Can be any ase readable file
+- `monomer_file` (str): Monomer file. Can be in ASE readable format
+- `-nh`, --number_of_host (int, optional): The number of host systems to consider. `Default is 1`.
+- `-nm`, --number_of_monomers (int, optional): The number of monomer systems to consider. `Default is 1`.
+- `-nc`, --number_of_complexes (int, optional): The number of complexes to consider. `Default is 1`.
+- `-r`, --results_folder (str, optional): Directory to save the output files. - Default is `results_folders`.
+
+## N.B Incase you wish to create complexes without computing energy
+
+In many cases, the xtb calculation may take a long time and you just
+wish to quickly generate a series of complexes without computing
+their BDE. Run the following command line arguments.
+
+1; **Single file**
+
+```bash
+    complexes_from_file host_file monomer_file
+```
+
+- `host_file` (str): Host file. Can be any ase readable file
+- `monomer_file` (str): Monomer file. Can be in ASE readable format
+- `-nh`, --number_of_host (int, optional): The number of host systems to consider. `Default is 1`.
+- `-nm`, --number_of_monomers (int, optional): The number of monomer systems to consider. `Default is 1`.
+- `-nc`, --number_of_complexes (int, optional): The number of complexes to consider. `Default is 1`.
+- `-r`, --results_folder (str, optional): Directory to save the output files. - Default is `results_folders`.
+
+2; **Batch processing**
+
+```bash
+    complexes_from_folder  host_folder monomer_folder
+```
+
+- `host_folder` (str): A folder containing host systems (files with .cif extension).
+- `monomer_folder` (str): A folder containing guest systems (files with .xyz extension).
+- `-nh`, --number_of_host (int, optional): The number of host systems to consider. `Default is 1`.
+- `-nm`, --number_of_monomers (int, optional): The number of monomer systems to consider. `Default is 1`.
+- `-nc`, --number_of_complexes (int, optional): The number of complexes to consider. `Default is 1`.
+- `-r`, --results_folder (str, optional): Directory to save the output files. - Default is `results_folders`.
+
+### json_to_cif
+
+The output from all the above commands will be create JSON files in the
+results folder containing the complexes atoms and energies. This was done
+to prevent creating multiple files. However, if you wish to conver the json
+file to cif files you run the following command:
+
+```bash
+json_to_cif json_file
+```
+
+#### NB
+
+You can also run the above command on a folder containing the json file
+
+```bash
+json_to_cif json_folder
+```
+
+#### Note
+
+The `json_to_cif` command will create folder with a default name `Complex_cif_folders`. You can specify a different name by simply passing
+it to the `json_to_cif` command as follows:
+
+```bash
+json_to_cif json_folder -r my_cif_folder_name
+```
+
+## **Compute xtb energy**
+
+Now you can directly compute the xtb energy directly from a file or folder containing structure files. The energy is directly extracted and converted
+to kcal/mol. You can acheive this as follows:
+
+```bash
+compute_xtb  filename or folder
+```
+
+## License
+
 This project is licensed under the MIT License.
 
-# Contributing
+## Contributing
 
 Contributions are welcome! Please fork the repository and submit a pull request with your changes.
 
-# Support
+## Support
 
 For any issues or questions, please open an issue on the GitHub repository.

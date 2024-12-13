@@ -101,7 +101,7 @@ def molecule_diameter(new_atom):
     return maxdim
 
 
-def Dock(host_system,  monomer, number_of_host=1, number_of_monomers=1, number_of_complexes=1):
+def Dock(host_system,  monomer, number_of_host=1, number_of_monomers=1, number_of_complexes=1, energy=True):
     """
     A fucntion to generate a host-guest system with a given number of monomers and number of hosts.
     parameter
@@ -112,15 +112,16 @@ def Dock(host_system,  monomer, number_of_host=1, number_of_monomers=1, number_o
     number_of_monomers: int
     number_of_complexes: int
     """
+    print (f'energy in docker is{energy}')
     system_def = {}
     system_master = {}
     energy_dict = {}
     complex_molecules = {}
     k3_params = {'num_geoms': number_of_complexes, 'ncpus': 1, 'mem': '2GB', 'wall': 1,
                  'charge': 0, 'multiplicity': 1, 'program': 'dftb', 'order': True}
-
-    energy_dict['monomer'] = compute_sp.compute_xtb_energy(monomer)
-    energy_dict['host_system'] = compute_sp.compute_xtb_energy(host_system)
+    if energy:
+        energy_dict['monomer'] = compute_sp.compute_xtb_energy(monomer)
+        energy_dict['host_system'] = compute_sp.compute_xtb_energy(host_system)
 
     SystemDict = namedtuple('SystemDict', 'number, frag_type')
     system_def['monomer'] = SystemDict(
@@ -234,15 +235,17 @@ def Dock(host_system,  monomer, number_of_host=1, number_of_monomers=1, number_o
                         # attempts = 0
         if len(new_mol) > 0:
             host_guest_complex = 'complex_' + str(ci)
-            new_mol_energy = compute_sp.compute_xtb_energy(new_mol)
-            energy_dict[host_guest_complex] = new_mol_energy
-            complex_molecules[host_guest_complex] = new_mol
-            try:
-                free_energy = energy_dict[host_guest_complex]['energy_kcal_mol'] - (
-                    number_of_monomers*energy_dict['monomer']['energy_kcal_mol'] + number_of_host*energy_dict['host_system']['energy_kcal_mol'])
-                energy_dict[host_guest_complex]['free_energy_kcal_mol'] = free_energy
-            except Exception as e:
-                print(e)
-            print(energy_dict)
+            if energy:
+                new_mol_energy = compute_sp.compute_xtb_energy(new_mol)
+                energy_dict[host_guest_complex] = new_mol_energy
+                complex_molecules[host_guest_complex] = new_mol
+                try:
+                    free_energy = energy_dict[host_guest_complex]['energy_kcal_mol'] - (
+                        number_of_monomers*energy_dict['monomer']['energy_kcal_mol'] + number_of_host*energy_dict['host_system']['energy_kcal_mol'])
+                    energy_dict[host_guest_complex]['free_energy_kcal_mol'] = free_energy
+                except Exception as e:
+                    print(e)
+            else:
+                complex_molecules[host_guest_complex] = new_mol
 
     return energy_dict, complex_molecules

@@ -11,9 +11,17 @@ ase = "^3.23.0"
 pandas = "^2.2.2"
 
 [tool.poetry.scripts]
-dock_folder ="host_guest.setter.create_complexes_from_folder:main"
-dock_structure ="host_guest.setter.create_complexes_from_folder:main2"
-dock_from_ase="host_guest.setter.create_complexes_from_ase_atoms:main"
+dock_folder = "host_guest.setter.create_complexes_from_folder:main"
+dock_structure = "host_guest.setter.create_complexes_from_folder:main2"
+dock_from_ase= "host_guest.setter.create_complexes_from_ase_atoms:main"
+
+complexes_from_folder = "host_guest.setter.generate_complexes:main"
+complexes_from_file = "host_guest.setter.generate_complexes:main2"
+complexes_from_ase= "host_guest.setter.generate_complexes:main3"
+
+json_to_cif = "host_guest.setter.cif_from_json:main"
+
+compute_xtb = "host_guest.setter.compute_xtb:main"
 
 
 [build-system]
