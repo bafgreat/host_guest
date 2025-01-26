@@ -24,6 +24,7 @@ from ase.neighborlist import *
 from ase.atoms import Atoms
 from ase.atom import Atom
 from host_guest.energy import compute_sp
+from host_guest.geometry.pore_analyser import radius_from_convexhall
 
 # from mofbatteryml.io import filetyper
 
@@ -126,19 +127,24 @@ def Dock(host_system,  monomer, number_of_host=1, number_of_monomers=1, number_o
     SystemDict = namedtuple('SystemDict', 'number, frag_type')
     system_def['monomer'] = SystemDict(
         number=int(number_of_monomers), frag_type="R")
-    system_def['host_system'] = SystemDict(
-        number=int(number_of_host), frag_type="P")
+
     system_master['monomer'] = monomer
-    system_master['host_system'] = host_system
+
     system_cell = host_system.get_cell()
     system_pbc = host_system.get_pbc()
-    framework = host_system
 
-    if system_cell is not None:
+    system_master['host_system'] = host_system
+    framework = host_system
+    if system_pbc.any():
+        system_def['host_system'] = SystemDict(
+        number=int(number_of_host), frag_type="P")
         k3_params["cell"] = system_cell
         k3_params["pbc"] = system_pbc
         k3_params["radius"] = molecule_diameter(framework)/2.0
-
+    else:
+        system_def['host_system'] = SystemDict(
+        number=int(number_of_host), frag_type="L")
+        k3_params["radius"] = radius_from_convexhall(framework.positions)
     # total_objects = sum([v.number for v in system_def.values()])
 
     frag_list = []

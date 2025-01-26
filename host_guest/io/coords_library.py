@@ -3,8 +3,9 @@ from __future__ import print_function
 __author__ = "Dr. Dinga Wonanke"
 __status__ = "production"
 
-import numpy as np
 import re
+import numpy as np
+from scipy.spatial import ConvexHull
 from ase.io import read
 from ase import Atoms, Atom
 from host_guest.io import filetyper
@@ -244,10 +245,13 @@ def load_data_as_ase(filename):
     Load data as an ase atoms object
     """
     elements, positions, cell = collect_coords(filename)
-    ase_atoms = Atoms(symbols=elements, positions=positions)
+
     if len(cell) >= 3:
         ase_atoms = Atoms(symbols=elements, positions=positions, cell=cell, pbc=True)
-    return ase_atoms
+        return ata_atoms
+    else:
+        ase_atoms = Atoms(symbols=elements, positions=positions)
+        return ase_atoms
 
 
 # def ase_graph(input_system):
@@ -311,3 +315,7 @@ def ase_to_xtb(ase_atoms):
             xtb_coords.append('\t'.join( tmp_lattice) +'\n')
     xtb_coords.append('$end')
     return xtb_coords
+
+
+
+

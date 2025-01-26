@@ -5,6 +5,8 @@ import itertools
 from ase import Atoms
 from scipy.spatial import Delaunay
 from host_guest.geometry import util
+from scipy.spatial import ConvexHull
+
 
 bondRadii, mmbond = util.BondRadii()
 
@@ -163,10 +165,10 @@ def calculate_euler_characteristic(atoms: Atoms):
 def alpha_shape(points, alpha):
     """
     Compute the alpha shape (concave hull) of a set of points.
-    Parameters:
+    **parameters:***
         points (ndarray): array of points.
         alpha (float): alpha value to influence the shape.
-    Returns:
+    **returns:**
         edges, triangles, volume: edges, triangles, and volume of the shape.
     """
     tetrahedra = Delaunay(points).simplices
@@ -220,6 +222,26 @@ def calculate_number_of_pores2(atoms: Atoms):
     # Compute the number of pores using the relationship P = 1 - χ
     P = 1 - chi
     return P
+
+
+def radius_from_convexhall(coords:np.ndarray):
+    """
+    Calculate the radius of the convex hull from a set of coordinates.
+
+
+    **parameters**:
+        coords (numpy.ndarray): array of coordinates.
+
+    **returns**:
+        float: radius of the convex hull.
+    """
+    hull = ConvexHull(coords)
+    center = np.mean(coords, axis=0)
+    vertices = coords[hull.vertices]
+    distances = np.linalg.norm(vertices - center, axis=1)
+    radius = np.min(distances)
+    return radius
+
 # Example usage with an ASE Atoms object
 # atoms = Atoms(...)  # Define your Atoms object here
 # num_pores = calculate_number_of_pores(atoms, alpha=1.0)

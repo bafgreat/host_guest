@@ -20,8 +20,13 @@ def get_ase_atoms(js_data):
     ase_atoms: ase.Atoms
         ASE atoms object representing the complexes.
     """
-    ase_atoms = Atoms(symbols=js_data.get("labels"), positions=js_data.get('positions'), cell=js_data.get('lattice_vectors'), pbc=js_data.get('periodic'))
-    return ase_atoms
+    lattice_vectors = js_data.get('lattice_vectors')
+    is_empty = all(all(value == 0.0 for value in sublist) for sublist in lattice_vectors)
+    if is_empty:
+        return Atoms(symbols=js_data.get("labels"), positions=js_data.get('positions'))
+    else:
+        return Atoms(symbols=js_data.get("labels"), positions=js_data.get('positions'), cell=js_data.get('lattice_vectors'), pbc=js_data.get('periodic'))
+
 
 def json_to_cif(json_file, output_dir):
     """
@@ -44,10 +49,13 @@ def json_to_cif(json_file, output_dir):
         if not os.path.exists(path_to_save):
             os.makedirs(path_to_save)
         for base_name in json_data.get(dirname):
-            cif_file = os.path.join(path_to_save, base_name + '.cif')
+            cif_file = os.path.join(path_to_save, base_name)
             atom_data = json_data[dirname][base_name]
             ase_atoms = get_ase_atoms(atom_data)
-            ase_atoms.write(cif_file)
+            if ase_atoms.get_pbc().any():
+                ase_atoms.write(cif_file+'.cif')
+            else:
+                ase_atoms.write(cif_file+'.xyz')
 
 
 def main():
