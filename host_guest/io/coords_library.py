@@ -248,7 +248,7 @@ def load_data_as_ase(filename):
 
     if len(cell) >= 3:
         ase_atoms = Atoms(symbols=elements, positions=positions, cell=cell, pbc=True)
-        return ata_atoms
+        return ase_atoms
     else:
         ase_atoms = Atoms(symbols=elements, positions=positions)
         return ase_atoms
